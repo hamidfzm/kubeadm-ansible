@@ -1,0 +1,7 @@
+---
+- name: Installing tools
+  apt:
+    name:
+      - htop
+    state: latest
+    update_cache: yes
