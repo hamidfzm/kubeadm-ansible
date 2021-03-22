@@ -2,14 +2,11 @@
 
 Build a Kubernetes cluster using Ansible with kubeadm. The goal is easily install a Kubernetes cluster on machines running:
 
-  - Ubuntu 16.04
-  - CentOS 7
-  - Debian 9
+  - Debian 10
 
 System requirements:
 
   - Deployment environment must have Ansible `2.4.0+`
-  - Master and nodes must have passwordless SSH access
 
 # Usage
 
