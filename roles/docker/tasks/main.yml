@@ -19,9 +19,9 @@
     state: present
     filename: "docker"
 
-- name: Install docker engine
+- name: Install Docker engine
   apt:
-    force: True
+    force: yes
     update_cache: yes
     name: "docker-ce={{ docker_version }}*"
     state: present
@@ -31,10 +31,17 @@
     name: docker-ce
     selection: hold
 
+- name: Add user to docker group
+  user: name="{{ ansible_ssh_user }}" groups=docker append=yes
+
+- name: Copy daemon.json
+  template:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+
 - name: Enable and check Docker service
   systemd:
     name: docker
     daemon_reload: yes
     state: started
     enabled: yes
-  register: started_docker
