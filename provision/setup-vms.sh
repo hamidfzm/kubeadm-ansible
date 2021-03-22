@@ -12,5 +12,14 @@ cat <<EOF > ~/hosts
 EOF
 }
 
+function set_resolv() {
+cat <<EOF > ~/resolv.conf
+nameserver 178.22.122.100
+nameserver 185.51.200.2
+EOF
+}
+
 set_hosts
+set_resolv
 sudo mv ~/hosts /etc/
+sudo mv ~/resolv.conf /etc/

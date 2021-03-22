@@ -3,7 +3,7 @@ Vagrant.require_version ">= 1.7.0"
 def set_vbox(vb, config)
   vb.gui = false
   vb.memory = 2048
-  vb.cpus = 1
+  vb.cpus = 2
   config.vm.box = "debian/buster64"
 end
 
