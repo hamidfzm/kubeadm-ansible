@@ -1,18 +1,10 @@
 Vagrant.require_version ">= 1.7.0"
 
-$os_image = (ENV['OS_IMAGE'] || "ubuntu16").to_sym
-
 def set_vbox(vb, config)
   vb.gui = false
   vb.memory = 2048
   vb.cpus = 1
-
-  case $os_image
-  when :centos7
-    config.vm.box = "bento/centos-7.2"
-  when :ubuntu16
-    config.vm.box = "bento/ubuntu-16.04"
-  end
+  config.vm.box = "debian/buster64"
 end
 
 Vagrant.configure("2") do |config|
@@ -39,5 +31,5 @@ Vagrant.configure("2") do |config|
   end
 
   # Install of dependency packages using script
-  config.vm.provision :shell, path: "./hack/setup-vms.sh"
+  config.vm.provision :shell, path: "./provision/setup-vms.sh"
 end
