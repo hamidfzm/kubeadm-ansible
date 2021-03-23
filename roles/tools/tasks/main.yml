@@ -1,5 +1,10 @@
 ---
-- name: Installing tools
+
+- name: Installing tools (ohmyzsh)
+  include_role:
+    name: ohmyzsh
+
+- name: Installing tools (others)
   apt:
     name:
       - htop
