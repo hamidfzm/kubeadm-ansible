@@ -2,3 +2,5 @@
 .vagrant/
 *.retry
 .idea/
+
+join-command

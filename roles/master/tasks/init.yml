@@ -1,0 +1,52 @@
+---
+
+- name: Add an apt signing key for Kubernetes
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Adding apt repository for Kubernetes
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: kubernetes.list
+
+- name: Install Kubernetes binaries
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - kubelet
+      - kubeadm
+      - kubectl
+
+- name: Configure node ip
+  lineinfile:
+    create: yes
+    path: /etc/default/kubelet
+    line: KUBELET_EXTRA_ARGS=--node-ip={{ inventory_hostname }}
+
+- name: Restart kubelet
+  service:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
+
+- name: Initialize the Kubernetes cluster using kubeadm
+  command: kubeadm init --apiserver-advertise-address={{ inventory_hostname }} --apiserver-cert-extra-sans={{ inventory_hostname }}  --node-name k8s-m1 --pod-network-cidr=10.244.0.0/16
+
+- name: Setup kubeconfig for ssh user user
+  command: "{{ item }}"
+  with_items:
+    - mkdir -p /home/{{ ansible_ssh_user }}/.kube
+    - cp /etc/kubernetes/admin.conf /home/{{ ansible_ssh_user }}/.kube/config
+    - chown {{ ansible_ssh_user }}:{{ ansible_ssh_user }} /home/{{ ansible_ssh_user }}/.kube/config
+
+- name: Install calico pod network
+  become: false
+  command: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+- name: Deploy kubernetes dashboard into cluster
+  command: kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml

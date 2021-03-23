@@ -6,3 +6,9 @@
     - { role: tools }
     - { role: ohmyzsh }
     - { role: docker }
+    - { role: preinstall }
+
+- hosts: master
+  become: yes
+  roles:
+    - { role: master }

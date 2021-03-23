@@ -3,5 +3,7 @@
   apt:
     name:
       - htop
+      - nmap
+      - netcat
     state: latest
     update_cache: yes
