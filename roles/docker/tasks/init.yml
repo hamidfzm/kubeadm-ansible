@@ -1,0 +1,47 @@
+---
+
+- name: Install Docker dependencies
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg
+      - ca-certificates
+    state: present
+    update_cache: yes
+
+- name: Add Docker APT GPG key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+    state: present
+    filename: "docker"
+
+- name: Install Docker engine
+  apt:
+    force: yes
+    update_cache: yes
+    name: "docker-ce={{ docker_version }}*"
+    state: present
+
+- name: Hold docker version
+  dpkg_selections:
+    name: docker-ce
+    selection: hold
+
+- name: Add user to docker group
+  user: name="{{ ansible_ssh_user }}" groups=docker append=yes
+
+- name: Copy daemon.json
+  template:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: Enable and check Docker service
+  systemd:
+    name: docker
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
